@@ -25,11 +25,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.fortytwodragons.healthtracker.ListActivity"
-            android:label="@string/title_activity_list"
-            android:parentActivityName="com.fortytwodragons.healthtracker.MainActivity" >
-        </activity>
-        <activity
             android:name="com.fortytwodragons.healthtracker.EntryListActivity"
             android:label="@string/title_entry_list" >
         </activity>
@@ -40,6 +35,10 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".EntryListActivity" />
+        </activity>
+        <activity
+            android:name="com.fortytwodragons.healthtracker.SettingsActivity"
+            android:label="@string/title_activity_settings" >
         </activity>
     </application>
 

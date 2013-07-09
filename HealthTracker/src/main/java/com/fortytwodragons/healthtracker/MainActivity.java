@@ -3,7 +3,6 @@ package com.fortytwodragons.healthtracker;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,7 +15,14 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.Console;
+import com.fortytwodragons.healthtracker.db.HealthDAO;
+import com.fortytwodragons.healthtracker.db.HealthEntry;
+import com.fortytwodragons.healthtracker.db.HealthEntryMetric;
+import com.fortytwodragons.healthtracker.db.HealthTrackerContract;
+import com.fortytwodragons.healthtracker.db.HeathTrackerDBHelper;
+
+import java.util.ArrayList;
+import java.util.Date;
 
 public class MainActivity extends Activity {
 
@@ -59,6 +65,9 @@ public class MainActivity extends Activity {
         SeekBar sleep = (SeekBar) findViewById(R.id.sleep);
         TextView details = (TextView) findViewById(R.id.details);
 
+        ArrayList<HealthEntryMetric> metrics = new ArrayList<HealthEntryMetric>();
+        HealthEntry newEntry = new HealthEntry(0, happiness.getProgress(), "...details", new Date(), metrics);
+
         int sleepValue = sleep.getProgress();
         int happinessValue = happiness.getProgress();
         int skinValue = skin.getProgress();
@@ -67,19 +76,14 @@ public class MainActivity extends Activity {
         Log.i("Stuff", "Skin = " + skinValue);
         Log.i("Stuff", "Sleep = " + sleepValue);
 
-        HeathTrackerDBHelper mHeathTrackerDBHelper = new HeathTrackerDBHelper(this.getApplicationContext());
-        SQLiteDatabase db = mHeathTrackerDBHelper.getWritableDatabase();
-        ContentValues newRow = new ContentValues();
-        newRow.put(HealthTrackerContract.HealthEntry.COLUMN_HAPPINESS, happinessValue);
-        newRow.put(HealthTrackerContract.HealthEntry.COLUMN_SKIN, skinValue);
-        newRow.put(HealthTrackerContract.HealthEntry.COLUMN_SLEEP, sleepValue);
-        newRow.put(HealthTrackerContract.HealthEntry.COLUMN_DETAILS, details.getText().toString());
-        long id = db.insert(HealthTrackerContract.HealthEntry.TABLE_NAME, null, newRow);
-        Log.i("Stuff", "New id=" + id);
+        HealthDAO dao = new HealthDAO(this.getApplicationContext());
+        dao.saveEntry(newEntry);
+
+        Log.i("Stuff", "New id=" + newEntry.getId());
 
         Toast.makeText(this.getApplicationContext(), "Thanks for sharing!", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(this, EntryListActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(this, EntryListActivity.class);
+//        startActivity(intent);
     }
 
 }
